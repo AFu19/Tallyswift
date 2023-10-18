@@ -7,6 +7,7 @@ import java.util.Scanner;
 import data.Barang;
 import data.Kategori;
 import userAccount.Account;
+import Transaksi.Transaksi;
 
 public class Main {
 
@@ -16,9 +17,11 @@ public class Main {
 	private ArrayList<Account> loginData = new ArrayList<Account>();
 	private ArrayList<Barang> dataBarang = new ArrayList<Barang>();
 	private ArrayList<Kategori> dataKategori = new ArrayList<Kategori>();
+	private ArrayList<Transaksi> dataTransaksi = new ArrayList<Transaksi>();
 	private Integer indexKategori = 1;
 
 	public Main() {
+
 		// data akun yang tersedia
 		loginData.add(new Account("admin", "admin123"));
 		loginData.add(new Account("admins", "admin123"));
@@ -101,6 +104,7 @@ public class Main {
 			sc.nextLine();
 
 			if (option == 1) {
+				transaksi();
 
 			} else if (option == 2) {
 
@@ -145,6 +149,136 @@ public class Main {
 		}
 
 	}
+
+	public void transaksi() {
+		String namaBarang, checkoutchoice, metodePembayaran, pilihBank, pilihmb;
+		Integer qty;
+		
+		dataBarang();
+		System.out.println();
+		
+		boolean noCheckout = true;
+		
+		while (noCheckout) {
+			boolean adaBarang = false;
+
+	        while (!adaBarang) {
+	            System.out.print("Nama barang: ");
+	            namaBarang = sc.nextLine();
+
+	            for (Barang barang : dataBarang) {
+	                if (barang.getNamaBarang().equalsIgnoreCase(namaBarang)) {
+	                    adaBarang = true;
+	                    
+	                    do {
+	                    	System.out.print("Jumlah barang [>0]: ");
+		                    qty = nextInt();
+						} while (qty < 0);
+	                    
+	                    if (qty > 0 && qty <= barang.getStok()) {
+	                        Integer harga = barang.getHargaSatuan() * qty;
+	                        dataTransaksi.add(new Transaksi(namaBarang, qty, harga));
+	                        barang.setStok(barang.getStok() - qty);
+	                    } else {
+	                        System.out.println("Jumlah barang melebihi stok");
+	                    }
+	                    break;
+	                }
+	            }
+
+	            if (!adaBarang) {
+	                System.out.println("Barang tidak ditemukan.");
+	            }
+	        }
+			
+			Integer subTotal = 0;
+			System.out.println("Keranjang Belanja");
+			generateLine(52);
+			System.out.printf("| %-30s | %-3s | %-9s |\n", "Nama Barang", "Qty", "Harga");
+			generateLine(52);
+			for (Transaksi transaksi : dataTransaksi) {
+				System.out.printf("| %-30s | %-3d | %-9d |\n", transaksi.getNamaBarang(), transaksi.getQty(), transaksi.getHarga());
+				subTotal += transaksi.getHarga();
+			}
+			generateLine(52);
+			
+			Integer ppn = (int) (subTotal * 0.10);
+			Integer total = subTotal + ppn;
+			System.out.println("Subtotal: " + subTotal);
+	        System.out.println("PPN (10%): " + ppn);
+	        System.out.println("Total: " + total);
+			System.out.println();
+			
+			do {
+				System.out.print("Checkout? [Y/N]: ");
+		        checkoutchoice = sc.nextLine();
+			} while (!(checkoutchoice.equalsIgnoreCase("Y") || checkoutchoice.equalsIgnoreCase("N")));
+			noCheckout = checkoutchoice.equalsIgnoreCase("N");
+		}
+		metodePembayaran();
+	}
+	
+	public void metodePembayaran() {
+		String metodePembayaran, pilihBank, pilihmb;
+		Integer nominalBayar = 0;
+		do {
+			System.out.print("Pilih metode pembayaran [cash, debit card, mobile banking]: ");
+			metodePembayaran = sc.nextLine();
+		} while (!(metodePembayaran.equalsIgnoreCase("cash") || metodePembayaran.equalsIgnoreCase("debit card") || metodePembayaran.equalsIgnoreCase("mobile banking")));
+
+		if (metodePembayaran.equalsIgnoreCase("cash")) {
+			System.out.print("Masukkan nominal yang dibayarkan: ");
+			nominalBayar = nextInt();
+		} else if (metodePembayaran.equalsIgnoreCase("debit card")) {
+			do {
+				System.out.print("Pilih bank [CIMB Niaga, Mandiri, BCA, Permata Bank, BRI]: ");
+				pilihBank = sc.nextLine();
+			} while (!(pilihBank.equalsIgnoreCase("CIMB Niaga") || pilihBank.equalsIgnoreCase("Mandiri") || pilihBank.equalsIgnoreCase("BCA") ||
+					pilihBank.equalsIgnoreCase("Permata Bank") || pilihBank.equalsIgnoreCase("BRI")));
+		} else if (metodePembayaran.equalsIgnoreCase("mobile banking")) {
+			do {
+				System.out.print("Pilih mobile banking [Gopay, Dana, OVO]: ");
+				pilihmb = sc.nextLine();
+			} while (!(pilihmb.equalsIgnoreCase("Gopay") || pilihmb.equalsIgnoreCase("Dana") || pilihmb.equalsIgnoreCase("OVO")));
+		}
+
+		Integer subTotal = 0;
+		System.out.println("Transaksi Berhasil!");
+		generateLine(50);
+		System.out.printf("| %-30s | %-3s | %-9s |\n", "Nama Barang", "Qty", "Harga");
+		generateLine(50);
+		for (Transaksi transaksi : dataTransaksi) {
+			System.out.printf("| %-30s | %-3d | %-9d |\n", transaksi.getNamaBarang(), transaksi.getQty(), transaksi.getHarga());
+			subTotal += transaksi.getHarga();
+		}
+		generateLine(50);
+		
+		Integer ppn = (int) (subTotal * 0.10);
+		Integer total = subTotal + ppn;
+	    if (metodePembayaran.equalsIgnoreCase("debit card") || metodePembayaran.equalsIgnoreCase("mobile banking")) {
+			nominalBayar = total;
+		}
+	Integer kembalian = nominalBayar - total;
+	System.out.println("Subtotal: " + subTotal);
+        System.out.println("PPN (10%): " + ppn);
+        System.out.println("Total: " + total);
+        System.out.println("Pembayaran: " + metodePembayaran + ": " + nominalBayar);
+        System.out.println("Kembalian: " + kembalian);
+        System.out.println("");
+        
+        pressEnter();
+	}
+
+	public void dataBarang() {
+		System.out.println("Data Barang");
+		generateLine(49);
+		System.out.printf("| %-30s | %-12s |\n", "Nama Barang", "Harga Satuan");
+		generateLine(49);
+		for (Barang barang : dataBarang) {
+			System.out.printf("| %-30s | %-12d |\n", barang.getNamaBarang(), barang.getHargaSatuan());
+		}
+		generateLine(49);
+	}	
 
 	public void tambahBarang() {
 		
