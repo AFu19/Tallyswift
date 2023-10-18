@@ -6,8 +6,8 @@ import java.util.Scanner;
 
 import data.Barang;
 import data.Kategori;
+import data.Transaksi;
 import userAccount.Account;
-import Transaksi.Transaksi;
 
 public class Main {
 
@@ -151,7 +151,7 @@ public class Main {
 	}
 
 	public void transaksi() {
-		String namaBarang, checkoutchoice, metodePembayaran, pilihBank, pilihmb;
+		String namaBarang, checkoutchoice;
 		Integer qty;
 		
 		dataBarang();
