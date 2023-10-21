@@ -121,7 +121,7 @@ public class Main {
 					System.out.println("1. tambah barang");
 					System.out.println("2. ubah barang");
 					System.out.println("3. hapus barang");
-					System.out.println("4. back");
+					System.out.println("0. back");
 					opsi = nextInt();
 
 					if (opsi == 1) {
@@ -136,7 +136,7 @@ public class Main {
 						
 						delete();
 
-					} else if (opsi == 4) {
+					} else if (opsi == 0) {
 						menu();
 
 					}
@@ -157,7 +157,7 @@ public class Main {
 		Integer qty, choice;
 		
 	    for (Barang barang : dataBarang) {
-	        stok.add(new Barang(barang.getKodeBarang(), barang.getKategoriID(), barang.getNamaBarang(), barang.getHargaSatuan(), barang.getStok()));
+	        stok.add(new Barang(barang.getKodeBarang(), barang.getKategoriID(), barang.getNamaBarang(), barang.getKategori(),  barang.getHargaSatuan(), barang.getStok()));
 	    }
 
 		boolean tambahkeranjang = false;
@@ -393,11 +393,15 @@ public class Main {
 		String kodeBarang; // BR[0-9][0-9][0-9]
 		String kategoriID; // KG[0-9][0-9][0-9]
 		String namaBarang;
+		String kategori;
 		Integer hargaSatuan;
 		Integer stok;
 		
 		System.out.print("masukkan nama barang : ");
 		namaBarang = sc.nextLine();
+		
+		System.out.println("masukkan kategori barang : ");
+		kategori = sc.nextLine();
 		
 		System.out.print("masukkan harga satuan : ");
 		hargaSatuan = sc.nextInt();sc.nextLine();
@@ -408,7 +412,7 @@ public class Main {
 		kodeBarang = "BR" + rand.nextInt(10)+ rand.nextInt(10)+ rand.nextInt(10);
 		kategoriID = "KG" + rand.nextInt(10)+ rand.nextInt(10)+ rand.nextInt(10);
 		
-		dataBarang.add(new Barang(kodeBarang, kategoriID, namaBarang, hargaSatuan, stok));
+		dataBarang.add(new Barang(kodeBarang, kategoriID, kategori, namaBarang, hargaSatuan, stok));
 		
 		System.out.println("Barang dengan kode barang : " + kodeBarang + " dan kategoti ID : " + kategoriID + " berhasil dimasukkan");
 		System.out.println("Tekan enter untuk lanjut...");
@@ -424,6 +428,7 @@ public class Main {
 				System.out.println("Kode Barang : " + dataBarang.get(i).getKodeBarang());
 				System.out.println("Kategori ID : " + dataBarang.get(i).getKategoriID());
 				System.out.println("Nama : " + dataBarang.get(i).getNamaBarang());
+				System.out.println("Nama : " + dataBarang.get(i).getKategori());
 				System.out.println("Harga Satuan : " + dataBarang.get(i).getHargaSatuan());
 				System.out.println("Stok : " + dataBarang.get(i).getStok());
 				System.out.println(" ");
@@ -439,6 +444,7 @@ public class Main {
 		String namaBarang;
 		Integer hargaSatuan;
 		Integer stok;
+		String kategori;
 	
 
 		view();
@@ -454,6 +460,9 @@ public class Main {
 		System.out.print("masukkan nama barang : ");
 		namaBarang = sc.nextLine();
 		
+		System.out.println("masukkan kategori barang : ");
+		kategori = sc.nextLine();
+		
 		System.out.print("masukkan harga satuan : ");
 		hargaSatuan = sc.nextInt();sc.nextLine();
 		
@@ -462,6 +471,7 @@ public class Main {
 		
 		for (int i = 0; i < dataBarang.size(); i++) {
 			dataBarang.get(i).setNamaBarang(namaBarang);
+			dataBarang.get(i).setKategori(kategori);
 			dataBarang.get(i).setHargaSatuan(hargaSatuan);
 			dataBarang.get(i).setStok(stok);
 
@@ -504,7 +514,7 @@ public class Main {
 				del -= 1;
 				dataBarang.remove(del);
 				
-				System.out.println("Barang bersahil dihapus");
+				System.out.println("Barang berhasil dihapus");
 				System.out.println("Tekan enter untuk lanjut...");
 				sc.nextLine();
 	
