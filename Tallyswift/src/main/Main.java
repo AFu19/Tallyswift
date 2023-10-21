@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import data.Barang;
 import data.Kategori;
+import data.Keranjang;
 import data.Transaksi;
 import userAccount.Account;
 
@@ -16,9 +17,12 @@ public class Main {
 	private Random rand = new Random();
 	private ArrayList<Account> loginData = new ArrayList<Account>();
 	private ArrayList<Barang> dataBarang = new ArrayList<Barang>();
+	private ArrayList<Barang> stok = new ArrayList<Barang>();
 	private ArrayList<Kategori> dataKategori = new ArrayList<Kategori>();
+	private ArrayList<Keranjang> dataKeranjang = new ArrayList<>();
 	private ArrayList<Transaksi> dataTransaksi = new ArrayList<Transaksi>();
 	private Integer indexKategori = 1;
+	private Integer totalTemp;
 
 	public Main() {
 
@@ -100,8 +104,7 @@ public class Main {
 			System.out.println("0. Keluar");
 			System.out.print(">> ");
 
-			option = sc.nextInt();
-			sc.nextLine();
+			option = nextInt();
 
 			if (option == 1) {
 				transaksi();
@@ -118,9 +121,8 @@ public class Main {
 					System.out.println("1. tambah barang");
 					System.out.println("2. ubah barang");
 					System.out.println("3. hapus barang");
-					System.out.println("0. back");
-					opsi = sc.nextInt();
-					sc.nextLine();
+					System.out.println("4. back");
+					opsi = nextInt();
 
 					if (opsi == 1) {
 
@@ -129,7 +131,6 @@ public class Main {
 					} else if (opsi == 2) {
 						
 						update();
-						
 
 					} else if (opsi == 3) {
 						
@@ -143,6 +144,7 @@ public class Main {
 				}
 
 			} else if (option == 0) {
+				System.exit(0);
 				break;
 			}
 
@@ -151,37 +153,43 @@ public class Main {
 	}
 
 	public void transaksi() {
-		String namaBarang, checkoutchoice;
-		Integer qty;
+		String namaBarang;
+		Integer qty, choice;
 		
-		dataBarang();
-		System.out.println();
-		
-		boolean noCheckout = true;
-		
-		while (noCheckout) {
-			boolean adaBarang = false;
+	    for (Barang barang : dataBarang) {
+	        stok.add(new Barang(barang.getKodeBarang(), barang.getKategoriID(), barang.getNamaBarang(), barang.getHargaSatuan(), barang.getStok()));
+	    }
 
+		boolean tambahkeranjang = false;
+		do {
+			dataBarang();
+			
+			boolean adaBarang = false;
 	        while (!adaBarang) {
 	            System.out.print("Nama barang: ");
 	            namaBarang = sc.nextLine();
 
 	            for (Barang barang : dataBarang) {
 	                if (barang.getNamaBarang().equalsIgnoreCase(namaBarang)) {
+	                    namaBarang = barang.getNamaBarang();
 	                    adaBarang = true;
 	                    
+	                    boolean lebihstok = false;
 	                    do {
-	                    	System.out.print("Jumlah barang [>0]: ");
-		                    qty = nextInt();
-						} while (qty < 0);
-	                    
-	                    if (qty > 0 && qty <= barang.getStok()) {
-	                        Integer harga = barang.getHargaSatuan() * qty;
-	                        dataTransaksi.add(new Transaksi(namaBarang, qty, harga));
-	                        barang.setStok(barang.getStok() - qty);
-	                    } else {
-	                        System.out.println("Jumlah barang melebihi stok");
-	                    }
+	                    	do {
+	 	                    	System.out.print("Jumlah barang [>0] (ketik 0 kalau abis kepencet tambah barang): ");
+	 		                qty = nextInt();
+	 			} while (qty < 0);
+	 	                    
+	 	                if (qty >= 0 && qty <= barang.getStok()) {
+	 	                        Integer harga = barang.getHargaSatuan() * qty;
+	 	                        dataKeranjang.add(new Keranjang(namaBarang, qty, harga)); 	                        
+	 	                        barang.setStok(barang.getStok() - qty);
+	 	                } else {
+	 	                	System.out.println("Jumlah barang melebihi stok");
+	 	                        lebihstok = true;
+	 	                }
+			    } while (lebihstok);
 	                    break;
 	                }
 	            }
@@ -191,55 +199,118 @@ public class Main {
 	            }
 	        }
 			
-			Integer subTotal = 0;
-			System.out.println("Keranjang Belanja");
-			generateLine(52);
-			System.out.printf("| %-30s | %-3s | %-9s |\n", "Nama Barang", "Qty", "Harga");
-			generateLine(52);
-			for (Transaksi transaksi : dataTransaksi) {
-				System.out.printf("| %-30s | %-3d | %-9d |\n", transaksi.getNamaBarang(), transaksi.getQty(), transaksi.getHarga());
-				subTotal += transaksi.getHarga();
-			}
-			generateLine(52);
-			
-			Integer ppn = (int) (subTotal * 0.10);
-			Integer total = subTotal + ppn;
-			System.out.println("Subtotal: " + subTotal);
-	        System.out.println("PPN (10%): " + ppn);
-	        System.out.println("Total: " + total);
-			System.out.println();
+			keranjangBelanja();
 			
 			do {
-				System.out.print("Checkout? [Y/N]: ");
-		        checkoutchoice = sc.nextLine();
-			} while (!(checkoutchoice.equalsIgnoreCase("Y") || checkoutchoice.equalsIgnoreCase("N")));
-			noCheckout = checkoutchoice.equalsIgnoreCase("N");
-		}
+				System.out.println("Tindakan selanjutnya");
+				System.out.println("1. Tambah barang lain");
+				System.out.println("2. Checkout");
+				System.out.println("3. Kembali ke menu");
+				System.out.print(">> ");
+		        	choice = nextInt();
+			} while (choice < 1 || choice > 3);
+			
+			switch (choice) {
+			case 1:
+				tambahkeranjang = true;
+				break;
+			case 2:
+				tambahkeranjang = false;
+				break;
+			case 3:
+				dataKeranjang.clear();
+				kembalikanStokAwal();
+				menu();
+				break;
+			}
+		} while (tambahkeranjang == true);
+		System.out.println();
+		
 		metodePembayaran();
 	}
-	
-	public void metodePembayaran() {
-		String metodePembayaran, pilihBank, pilihmb;
-		Integer nominalBayar = 0;
-		do {
-			System.out.print("Pilih metode pembayaran [cash, debit card, mobile banking]: ");
-			metodePembayaran = sc.nextLine();
-		} while (!(metodePembayaran.equalsIgnoreCase("cash") || metodePembayaran.equalsIgnoreCase("debit card") || metodePembayaran.equalsIgnoreCase("mobile banking")));
 
-		if (metodePembayaran.equalsIgnoreCase("cash")) {
-			System.out.print("Masukkan nominal yang dibayarkan: ");
-			nominalBayar = nextInt();
-		} else if (metodePembayaran.equalsIgnoreCase("debit card")) {
+	public void metodePembayaran() {
+		Integer metodePembayaran, nominalBayar = 0, pilihbank = 0, pilihmb = 0;
+		String namabankmb = "";
+		String namaMetodePembayaran = "";
+		
+		do {
 			do {
-				System.out.print("Pilih bank [CIMB Niaga, Mandiri, BCA, Permata Bank, BRI]: ");
-				pilihBank = sc.nextLine();
-			} while (!(pilihBank.equalsIgnoreCase("CIMB Niaga") || pilihBank.equalsIgnoreCase("Mandiri") || pilihBank.equalsIgnoreCase("BCA") ||
-					pilihBank.equalsIgnoreCase("Permata Bank") || pilihBank.equalsIgnoreCase("BRI")));
-		} else if (metodePembayaran.equalsIgnoreCase("mobile banking")) {
-			do {
-				System.out.print("Pilih mobile banking [Gopay, Dana, OVO]: ");
-				pilihmb = sc.nextLine();
-			} while (!(pilihmb.equalsIgnoreCase("Gopay") || pilihmb.equalsIgnoreCase("Dana") || pilihmb.equalsIgnoreCase("OVO")));
+				System.out.println("Pilih metode pembayaran");
+				System.out.println("1. Cash");
+				System.out.println("2. Debit card");
+				System.out.println("3. Mobile banking");
+				System.out.println("4. Kembali ke transaksi");
+				System.out.print(">> ");
+				metodePembayaran = nextInt();
+			} while (metodePembayaran < 1 || metodePembayaran > 4);
+			
+			switch (metodePembayaran) {
+			case 1:
+				do {
+					System.out.println("Masukkan nominal yang dibayarkan: ");
+					System.out.println("[Ketik 1 untuk kembali ke metode pembayaran]");
+					System.out.print(">> ");
+					nominalBayar = nextInt();
+					if (nominalBayar < totalTemp && nominalBayar != 1) {
+						System.out.println("Uang yang dibayarkan kurang. Mungkin anda salah input, silahkan coba lagi.");
+					}
+				} while (nominalBayar < totalTemp && nominalBayar != 1);
+				break;
+			case 2:
+				do {
+					System.out.println("Pilih bank");
+					System.out.println("1. CIMB Niaga");
+					System.out.println("2. Mandiri");
+					System.out.println("3. Permata Bank");
+					System.out.println("4. BRI");
+					System.out.println("5. Kembali ke metode pembayaran");
+					System.out.print(">> ");
+					pilihbank = nextInt();
+				} while (pilihbank < 1 || pilihbank > 5);
+				
+				if (pilihbank == 1) {
+					namabankmb = " CIMB Niaga";
+				} else if (pilihbank == 2) {
+					namabankmb = " Mandiri";
+				} else if (pilihbank == 3) {
+					namabankmb = " Permata Bank";
+				} else if (pilihbank == 4) {
+					namabankmb = " BRI";
+				}
+				break;
+			case 3:
+				do {
+					System.out.println("Pilih mobile banking ");
+					System.out.println("1. Gopay");
+					System.out.println("2. Dana");
+					System.out.println("3. OVO");
+					System.out.println("4. Kembali ke metode pembayaran");
+					System.out.print(">> ");
+					pilihmb = nextInt();
+				} while (pilihmb < 1 || pilihmb > 4);
+				
+				if (pilihmb == 1) {
+					namabankmb = " Gopay";
+				} else if (pilihmb == 2) {
+					namabankmb = " Dana";
+				} else if (pilihmb == 3) {
+					namabankmb = " OVO";
+				}
+				break;
+			case 4:
+				transaksi();
+				break;
+			}
+		} while (nominalBayar == 1 || pilihbank == 5 || pilihmb == 4);
+		System.out.println();
+		
+		if (metodePembayaran == 1) {
+			namaMetodePembayaran = "Cash";
+		} else if (metodePembayaran == 2) {
+			namaMetodePembayaran = "Debit card";
+		} else if (metodePembayaran == 3) {
+			namaMetodePembayaran = "Mobile banking";
 		}
 
 		Integer subTotal = 0;
@@ -247,39 +318,76 @@ public class Main {
 		generateLine(50);
 		System.out.printf("| %-30s | %-3s | %-9s |\n", "Nama Barang", "Qty", "Harga");
 		generateLine(50);
-		for (Transaksi transaksi : dataTransaksi) {
-			System.out.printf("| %-30s | %-3d | %-9d |\n", transaksi.getNamaBarang(), transaksi.getQty(), transaksi.getHarga());
-			subTotal += transaksi.getHarga();
+		for (Keranjang k : dataKeranjang) {
+			System.out.printf("| %-30s | %-3d | %-9d |\n", k.getNamaBarang(), k.getQty(), k.getHarga());
+	        	dataTransaksi.add(new Transaksi(k.getNamaBarang(), k.getQty(), k.getHarga(), metodePembayaran));
+			subTotal += k.getHarga();
 		}
 		generateLine(50);
 		
 		Integer ppn = (int) (subTotal * 0.10);
 		Integer total = subTotal + ppn;
-	    if (metodePembayaran.equalsIgnoreCase("debit card") || metodePembayaran.equalsIgnoreCase("mobile banking")) {
+	    if (metodePembayaran == 2 || metodePembayaran == 3) {
 			nominalBayar = total;
 		}
 	Integer kembalian = nominalBayar - total;
 	System.out.println("Subtotal: " + subTotal);
         System.out.println("PPN (10%): " + ppn);
         System.out.println("Total: " + total);
-        System.out.println("Pembayaran: " + metodePembayaran + ": " + nominalBayar);
+        System.out.println("Pembayaran: " + namaMetodePembayaran + namabankmb + ": " + nominalBayar);
         System.out.println("Kembalian: " + kembalian);
         System.out.println("");
         
         pressEnter();
+        dataKeranjang.clear();
 	}
 
 	public void dataBarang() {
+		System.out.println();
 		System.out.println("Data Barang");
-		generateLine(49);
-		System.out.printf("| %-30s | %-12s |\n", "Nama Barang", "Harga Satuan");
-		generateLine(49);
+		generateLine(56);
+		System.out.printf("| %-30s | %-12s | %-4s |\n", "Nama Barang", "Harga Satuan", "Stok");
+		generateLine(56);
 		for (Barang barang : dataBarang) {
-			System.out.printf("| %-30s | %-12d |\n", barang.getNamaBarang(), barang.getHargaSatuan());
+			System.out.printf("| %-30s | %-12d | %-4d |\n", barang.getNamaBarang(), barang.getHargaSatuan(), barang.getStok());
 		}
-		generateLine(49);
+		generateLine(56);
+		System.out.println();
 	}	
-
+	
+	public void keranjangBelanja() {
+		Integer subTotal = 0;
+		
+		System.out.println();
+		System.out.println("Keranjang Belanja");
+		generateLine(52);
+		System.out.printf("| %-30s | %-3s | %-9s |\n", "Nama Barang", "Qty", "Harga");
+		generateLine(52);
+		for (Keranjang k : dataKeranjang) {
+			System.out.printf("| %-30s | %-3d | %-9d |\n", k.getNamaBarang(), k.getQty(), k.getHarga());
+			subTotal += k.getHarga();
+		}
+		generateLine(52);
+		
+		Integer ppn = (int) (subTotal * 0.10);
+		Integer total = subTotal + ppn;
+		System.out.println("Subtotal: " + subTotal);
+        	System.out.println("PPN (10%): " + ppn);
+        	System.out.println("Total: " + total);
+        	totalTemp = total;
+		System.out.println();
+	}
+	
+	public void kembalikanStokAwal() {
+		for (Barang stok : stok) {
+			for (Barang barang : dataBarang) {
+				if (stok.getKodeBarang().equals(barang.getKodeBarang())) {
+					barang.setStok(stok.getStok());
+				}
+			}
+		}
+	}
+	
 	public void tambahBarang() {
 		
 		String kodeBarang; // BR[0-9][0-9][0-9]
