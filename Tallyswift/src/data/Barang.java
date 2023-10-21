@@ -6,13 +6,15 @@ public class Barang {
 	private String namaBarang;
 	private Integer hargaSatuan;
 	private Integer stok;
+	private String kategori;
 	
-	public Barang(String kodeBarang, String kategoriID, String namaBarang, Integer hargaSatuan, Integer stok) {
+	public Barang(String kodeBarang, String kategoriID, String namaBarang, String kategori, Integer hargaSatuan, Integer stok) {
 		this.kodeBarang = kodeBarang;
 		this.kategoriID = kategoriID;
 		this.namaBarang = namaBarang;
 		this.hargaSatuan = hargaSatuan;
 		this.stok = stok;
+		this.kategori = kategori;
 	}
 	
 	public String getKodeBarang() {
@@ -45,4 +47,14 @@ public class Barang {
 	public void setStok(Integer stok) {
 		this.stok = stok;
 	}
+
+	public String getKategori() {
+		return kategori;
+	}
+
+	public void setKategori(String kategori) {
+		this.kategori = kategori;
+	}
+	
+	
 }
