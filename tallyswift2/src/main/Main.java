@@ -1,5 +1,8 @@
 package main;
 
+import java.util.ArrayList;
+
+import data.Barang;
 import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -9,12 +12,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -38,7 +44,11 @@ public class Main extends Application{
 	private PasswordField passwordTF;
 	private Button signInBtn;
 	private Button continuebtn;
+	private Button pageTransaksiBtn;
+	private Button masterDataBtn;
 	private Rectangle rectangle;
+	private ArrayList<Barang> dataBarang = new ArrayList<>();
+	private String titleColor = "#2D6936";
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -61,7 +71,7 @@ public class Main extends Application{
 		//header
 		title = new Label("E-Cashier");
 		title.setFont(fontTitle);
-		title.setTextFill(Color.web("#2D6936"));
+		title.setTextFill(Color.web(titleColor));
 		title.setPadding(new Insets(5, 0, 0, 0));
 		
 		rectangle = new Rectangle(0, 0, 1111, 80);
@@ -92,7 +102,7 @@ public class Main extends Application{
 		gp2.add(welcome, 0, 0);
 		gp2.setHalignment(welcome, HPos.CENTER);
 		welcome.setFont(fontWelcome);
-		welcome.setTextFill(Color.web("#2D6936"));
+		welcome.setTextFill(Color.web(titleColor));
 
 		Label desc1 = new Label("Empowering Businesses with Transactions");
 		gp2.add(desc1, 0, 1);
@@ -142,7 +152,7 @@ public class Main extends Application{
 		//header
 		title = new Label("E-Cashier");
 		title.setFont(fontTitle);
-		title.setTextFill(Color.web("#2D6936"));
+		title.setTextFill(Color.web(titleColor));
 		title.setPadding(new Insets(5, 0, 0, 0));
 
 		rectangle = new Rectangle(0, 0, 1111, 80);
@@ -162,14 +172,14 @@ public class Main extends Application{
 
 		signIn = new Label("Sign In");
 		signIn.setFont(fontSignIn);
-		signIn.setTextFill(Color.web("#2D6936"));
+		signIn.setTextFill(Color.web(titleColor));
 		gp.add(signIn, 0, 0);
 		gp.setMargin(signIn, new Insets(0, 0, 85, 0));
 		gp.setHalignment(signIn, HPos.CENTER);
 
 		userIdLbl = new Label("UserID");
 		userIdLbl.setFont(fontLbl);
-		userIdLbl.setTextFill(Color.web("#2D6936"));
+		userIdLbl.setTextFill(Color.web(titleColor));
 		gp.add(userIdLbl, 0, 1);
 
 		userIdTF = new TextField();
@@ -181,7 +191,7 @@ public class Main extends Application{
 
 		passwordLbl = new Label("Password");
 		passwordLbl.setFont(fontLbl);
-		passwordLbl.setTextFill(Color.web("#2D6936"));
+		passwordLbl.setTextFill(Color.web(titleColor));
 		gp.add(passwordLbl, 0, 3);
 
 		passwordTF = new PasswordField();
@@ -219,13 +229,15 @@ public class Main extends Application{
 		
 		//font set
 		Font fontTitle = Font.font("Poppins", FontWeight.BOLD, FontPosture.ITALIC, 44);
-		Font fontFooter = Font.font("Poppins", FontWeight.BOLD, 28);		
+		Font fontListBarang = Font.font("Poppins", 24);
+		Font fontSearchTF = Font.font("Poppins", 18);
+		Font fontBold36 = Font.font("Poppins", FontWeight.BOLD, 28);	
 		//end font set
 		
 		//header
 		title = new Label("E-Cashier");
 		title.setFont(fontTitle);
-		title.setTextFill(Color.web("#2D6936"));
+		title.setTextFill(Color.web(titleColor));
 		title.setPadding(new Insets(5, 0, 0, 0));
 		
 		Image img = new Image("logo.png");
@@ -250,40 +262,126 @@ public class Main extends Application{
 		bp.setCenter(gp3);
 		
 		//left container
-		Label dataBarang = new Label("Data Barang");
-		gp3.add(dataBarang, 0, 0);
+		//left container judul
+		Label dataBaranglbl = new Label("Data Barang");
+		dataBaranglbl.setFont(fontBold36);
+		dataBaranglbl.setTextFill(Color.web(titleColor));
+		gp3.add(dataBaranglbl, 0, 0);
+		gp3.setMargin(dataBaranglbl, new Insets(15, 0, 0, 35));
 		
+		TextField searchTF = new TextField();
+		searchTF.setFont(fontSearchTF);
+		searchTF.setPrefWidth(400);
+		searchTF.setPrefHeight(49);
+		searchTF.setStyle("-fx-background-color: #FFFFFF; -fx-border-radius: 10px; -fx-border-color: black;");
+		fp2.getChildren().add(searchTF);
+
 		Image searchIcon = new Image("search.png");
 		ImageView searchIconView = new ImageView(searchIcon);
 		searchIconView.setFitHeight(30);
 		searchIconView.setFitWidth(30);
-		fp2.getChildren().add(searchIconView);
-		
-		TextField searchTF = new TextField();
-		fp2.getChildren().add(searchTF);
+		StackPane searchPane = new StackPane();
+		Button searchBtn = new Button();
+		searchBtn.setPrefHeight(49);
+		searchBtn.setPrefWidth(60);
+		searchBtn.setStyle("-fx-background-color: #FFFFFF; -fx-border-radius: 10px; -fx-border-color: black;");
+		searchBtn.setOnMouseEntered(e-> scene3.setCursor(Cursor.HAND));
+		searchBtn.setOnMouseExited(e -> scene3.setCursor(Cursor.DEFAULT));
+		searchPane.getChildren().addAll(searchBtn, searchIconView);
+		fp2.getChildren().add(searchPane);
+		fp2.setHgap(6);
 		
 		gp3.add(fp2, 0, 1);
+		gp3.setMargin(fp2, new Insets(16, 0, 0, 35));
+		//end left container judul
 		
+		//left container produk
+		Barang b = new Barang("BR001", "KG001", "Teh Gelas", 3000, 10);
+		dataBarang.add(b);
+		dataBarang.add(new Barang("BR002", "KG002", "Yakult", 6000, 10));
+		dataBarang.add(new Barang("BR003", "KG001", "Momogi", 1000, 10));
+		dataBarang.add(new Barang("BR004", "KG002", "Susu ultra milk", 3000, 10));
+		dataBarang.add(new Barang("BR005", "KG001", "Indomie", 6000, 10));
+		dataBarang.add(new Barang("BR006", "KG001", "Chitato", 6000, 10));
+		dataBarang.add(new Barang("BR007", "KG002", "Aqua", 3000, 10));
+		dataBarang.add(new Barang("BR008", "KG001", "Coca Cola", 3000, 10));
+		dataBarang.add(new Barang("BR009", "KG002", "Chocolatos", 1500, 10));
+		dataBarang.add(new Barang("BR010", "KG001", "Teh Pucuk", 1500, 10));
 		
+		ScrollPane scrollProduk = new ScrollPane();
+		scrollProduk.setHbarPolicy(ScrollBarPolicy.NEVER);
+		scrollProduk.setVbarPolicy(ScrollBarPolicy.NEVER);
+		scrollProduk.setStyle("-fx-background-color: #FFFFFF; -fx-border-radius: 10px 10px 0 0; -fx-border-color: black;");
+		scrollProduk.setPadding(new Insets(15));
+		
+		GridPane listProduk = new GridPane();
+		listProduk.setVgap(10);
+
+		int idx = 0;
+		for (Barang barang : dataBarang) {
+			FlowPane gridNamaHarga = new FlowPane();
+			gridNamaHarga.setPrefWidth(436); 
+			gridNamaHarga.setPrefHeight(66);
+			gridNamaHarga.setPadding(new Insets(0, 5, 0, 15));
+			
+			Label namaProduk = new Label(barang.getNamaBarang());
+			namaProduk.setFont(fontListBarang);
+			HBox hbb = new HBox();
+			hbb.setPrefWidth(320);
+			hbb.setPrefHeight(66);
+			hbb.getChildren().add(namaProduk);
+			gridNamaHarga.getChildren().add(hbb);
+			hbb.setAlignment(Pos.CENTER_LEFT);
+			
+			Label hargaProduk = new Label("Rp" + barang.getHargaSatuan());			
+			hargaProduk.setFont(fontListBarang);
+			HBox hb = new HBox();
+			hb.setPrefWidth(85);
+			hb.setPrefHeight(66);
+			hb.getChildren().add(hargaProduk);
+			gridNamaHarga.getChildren().add(hb);
+			hb.setAlignment(Pos.CENTER_RIGHT);
+			
+			Button produkBtn = new Button();
+			produkBtn.setFont(fontListBarang);
+			produkBtn.setPrefWidth(436); 
+			produkBtn.setPrefHeight(66);
+			produkBtn.setStyle("-fx-background-color: #FFFFFF; -fx-border-radius: 10px; -fx-border-color: black;");
+			
+			StackPane stackListProduk = new StackPane();			
+			stackListProduk.getChildren().addAll(produkBtn, gridNamaHarga);
+			stackListProduk.setOnMouseEntered(e-> scene3.setCursor(Cursor.HAND));
+			stackListProduk.setOnMouseExited(e -> scene3.setCursor(Cursor.DEFAULT));
+			stackListProduk.setOnMouseClicked(e -> System.out.println(barang.getNamaBarang()));
+
+			listProduk.add(stackListProduk, 0, idx);
+			idx++;
+		}
+		
+		scrollProduk.setContent(listProduk);
+		
+		gp3.add(scrollProduk, 0, 2);
+		gp3.setMargin(scrollProduk, new Insets(22, 0, 0, 35));
+		//end left container produk
 		//end left container
 		
 		//end body
 		
 		//footer
 		gp2.setPrefWidth(1110);
-		Button pageTransaksiBtn = new Button("Transaksi Pembelian");
+		pageTransaksiBtn = new Button("Transaksi Pembelian");
 		pageTransaksiBtn.setPrefWidth(555);
 		pageTransaksiBtn.setPrefHeight(80);
-		pageTransaksiBtn.setFont(fontFooter);
+		pageTransaksiBtn.setFont(fontBold36);
 		pageTransaksiBtn.setTextFill(Color.web("#004F38"));
 		pageTransaksiBtn.setStyle("-fx-background-color: #F4F2DE; -fx-border-color: black black transparent transparent;");
 		pageTransaksiBtn.setOnMouseEntered(e-> scene3.setCursor(Cursor.HAND));
 		pageTransaksiBtn.setOnMouseExited(e -> scene3.setCursor(Cursor.DEFAULT));
 		
-		Button masterDataBtn = new Button("Master Data");
+		masterDataBtn = new Button("Master Data");
 		masterDataBtn.setPrefWidth(555);
 		masterDataBtn.setPrefHeight(80);
-		masterDataBtn.setFont(fontFooter);
+		masterDataBtn.setFont(fontBold36);
 		masterDataBtn.setTextFill(Color.web("#004F38"));
 		masterDataBtn.setStyle("-fx-background-color: #FCFCFC; -fx-border-color: black black transparent transparent;");
 		masterDataBtn.setOnMouseEntered(e-> scene3.setCursor(Cursor.HAND));
@@ -312,7 +410,7 @@ public class Main extends Application{
 		
 		transaksi();
 		
-		primaryStage.setScene(scene1);
+		primaryStage.setScene(scene3);
 		primaryStage.setResizable(false);
 		primaryStage.setMaximized(false);
 		primaryStage.show();
