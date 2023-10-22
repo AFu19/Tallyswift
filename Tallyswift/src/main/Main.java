@@ -412,9 +412,9 @@ public class Main {
 		kodeBarang = "BR" + rand.nextInt(10)+ rand.nextInt(10)+ rand.nextInt(10);
 		kategoriID = "KG" + rand.nextInt(10)+ rand.nextInt(10)+ rand.nextInt(10);
 		
-		dataBarang.add(new Barang(kodeBarang, kategoriID, kategori, namaBarang, hargaSatuan, stok));
+		dataBarang.add(new Barang(kodeBarang, kategoriID, namaBarang, kategori, hargaSatuan, stok));
 		
-		System.out.println("Barang dengan kode barang : " + kodeBarang + " dan kategoti ID : " + kategoriID + " berhasil dimasukkan");
+		System.out.println("Barang dengan kode barang : " + kodeBarang + " dan kategori ID : " + kategoriID + " berhasil dimasukkan");
 		System.out.println("Tekan enter untuk lanjut...");
 		sc.nextLine();
 		
@@ -427,8 +427,8 @@ public class Main {
 			for (int i = 0; i < dataBarang.size(); i++) {
 				System.out.println("Kode Barang : " + dataBarang.get(i).getKodeBarang());
 				System.out.println("Kategori ID : " + dataBarang.get(i).getKategoriID());
-				System.out.println("Nama : " + dataBarang.get(i).getNamaBarang());
-				System.out.println("Nama : " + dataBarang.get(i).getKategori());
+				System.out.println("Nama Barang : " + dataBarang.get(i).getNamaBarang());
+				System.out.println("Kategori Barang: " + dataBarang.get(i).getKategori());
 				System.out.println("Harga Satuan : " + dataBarang.get(i).getHargaSatuan());
 				System.out.println("Stok : " + dataBarang.get(i).getStok());
 				System.out.println(" ");
