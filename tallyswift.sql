@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 15, 2023 at 04:50 PM
+-- Generation Time: Nov 20, 2023 at 06:15 PM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 8.0.7
 
@@ -40,14 +40,14 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`ProductID`, `CategoryID`, `ProductName`, `Price`, `Stock`) VALUES
-('PR001', 'KG001', 'Teh Gelas', 3000, 150),
-('PR002', 'KG001', 'Yakult', 6000, 80),
-('PR003', 'KG002', 'Indomie', 5000, 200),
-('PR004', 'KG003', 'Beras', 12000, 90),
-('PR005', 'KG004', 'Paracetamol', 5000, 50),
+('PR001', 'KG001', 'Teh Gelas', 3000, 145),
+('PR002', 'KG001', 'Yakult', 6000, 70),
+('PR003', 'KG002', 'Indomie', 5000, 196),
+('PR004', 'KG003', 'Beras', 12000, 88),
+('PR005', 'KG004', 'Paracetamol', 5000, 49),
 ('PR006', 'KG002', 'Kopi Sachet', 4000, 120),
 ('PR007', 'KG001', 'Aqua', 2000, 170),
-('PR008', 'KG003', 'Gula Pasir', 8000, 100),
+('PR008', 'KG003', 'Gula Pasir', 8000, 97),
 ('PR009', 'KG004', 'Vitamin C', 15000, 30),
 ('PR010', 'KG002', 'Mie Goreng', 7000, 110),
 ('PR011', 'KG001', 'Teh Pucuk', 3500, 130),
@@ -56,17 +56,17 @@ INSERT INTO `product` (`ProductID`, `CategoryID`, `ProductName`, `Price`, `Stock
 ('PR014', 'KG003', 'Minyak Goreng', 10000, 160),
 ('PR015', 'KG004', 'Obh Combi', 10000, 25),
 ('PR016', 'KG002', 'Keripik Singkong', 9000, 180),
-('PR017', 'KG001', 'Coca Cola', 5000, 60),
+('PR017', 'KG001', 'Coca Cola', 5000, 57),
 ('PR018', 'KG002', 'Roti Tawar', 7000, 140),
 ('PR019', 'KG001', 'Susu Kental Manis', 8500, 75),
 ('PR020', 'KG003', 'Lada Hitam', 12000, 50),
 ('PR021', 'KG004', 'Antimo', 6000, 35),
 ('PR022', 'KG001', 'Jus Jeruk', 6500, 110),
 ('PR023', 'KG003', 'Kecap ABC', 9000, 80),
-('PR024', 'KG002', 'Chocolatos', 12000, 45),
-('PR025', 'KG001', 'Air Mineral Botol', 3000, 200),
+('PR024', 'KG002', 'Chocolatos', 12000, 35),
+('PR025', 'KG001', 'Air Mineral Botol', 3000, 195),
 ('PR026', 'KG004', 'Betadine', 8000, 30),
-('PR027', 'KG001', 'Kopi ABC', 5500, 90),
+('PR027', 'KG001', 'Kopi ABC', 5500, 0),
 ('PR028', 'KG002', 'Kacang Tanah', 6000, 130),
 ('PR029', 'KG003', 'Bawang Merah', 7500, 75),
 ('PR030', 'KG004', 'Amoxilin', 10000, 20),
@@ -124,6 +124,21 @@ CREATE TABLE `transactiondetail` (
   `Quantity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `transactiondetail`
+--
+
+INSERT INTO `transactiondetail` (`TransactionID`, `ProductID`, `Quantity`) VALUES
+('TR001', 'PR002', 1),
+('TR001', 'PR004', 2),
+('TR001', 'PR005', 1),
+('TR001', 'PR008', 3),
+('TR002', 'PR017', 3),
+('TR002', 'PR024', 10),
+('TR002', 'PR025', 5),
+('TR003', 'PR002', 4),
+('TR003', 'PR003', 4);
+
 -- --------------------------------------------------------
 
 --
@@ -132,10 +147,18 @@ CREATE TABLE `transactiondetail` (
 
 CREATE TABLE `transactionheader` (
   `TransactionID` varchar(5) NOT NULL,
-  `UserID` varchar(10) NOT NULL,
   `TransactionDate` date NOT NULL,
   `PaymentMethod` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `transactionheader`
+--
+
+INSERT INTO `transactionheader` (`TransactionID`, `TransactionDate`, `PaymentMethod`) VALUES
+('TR001', '2023-11-20', 'Cash'),
+('TR002', '2023-11-21', 'Debit - Permata Bank'),
+('TR003', '2023-11-21', 'Debit - BCA');
 
 -- --------------------------------------------------------
 
