@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import data.Barang;
 import data.Kategori;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -50,12 +51,32 @@ public class TambahBarang extends Application{
 	private Image logoImage;
 	private ImageView logoImageView;
 	private String titleColor = "#2D6936";
+	private ArrayList<String> dataBarang;
 	private List<Kategori> dataKategori;
 	private Button tambahBarangButton, ubahBarangButton, hapusBarangButton, tambahButton, footerPageTransaksiButton, footerPageMasterDataButton;
 	private HBox tambahButtonBox;
 	private ComboBox<Kategori> kategoriList;
 	private String selectedID;
 	private Integer lastID;
+	
+	private void getBarangData() {
+		dataBarang.clear();
+		
+		String query = "SELECT * FROM product";
+		connect.rs = connect.execQuery(query);
+		try {
+			while (connect.rs.next()) {
+				String kodeBarang = connect.rs.getString("ProductID");
+				String kategoriID = connect.rs.getString("CategoryID");
+				String namaBarang = connect.rs.getString("ProductName");
+				Integer hargaSatuan = connect.rs.getInt("Price");
+				Integer stok = connect.rs.getInt("Stock");
+				
+				dataBarang.add(namaBarang.toLowerCase());
+			}
+		} catch (Exception e) {}
+		
+	}
 	
 	private void getKategori() {
 		dataKategori.clear();
@@ -100,6 +121,7 @@ public class TambahBarang extends Application{
 	
 	private void initialize() {
 		dataKategori = new ArrayList<>();
+		dataBarang = new ArrayList<>();
 		
 		sceneBorderPane = new BorderPane();
 		containerBorderPane = new BorderPane();
@@ -186,6 +208,7 @@ public class TambahBarang extends Application{
 	private void initializeContainer() {
 		styleContainer();
 		getKategori();
+		getBarangData();
 		
 		containerBorderPane.setTop(crudGridPane);
 		containerBorderPane.setCenter(inputDataGridPane);
@@ -361,6 +384,9 @@ public class TambahBarang extends Application{
 		tambahButton.setOnMouseClicked(e -> {
 			if (selectedID == null || namaBarangTF.getText().isEmpty() || hargaTF.getText().isEmpty() || Integer.valueOf(hargaTF.getText()) < 1 || stokTF.getText().isEmpty() || Integer.valueOf(stokTF.getText()) < 1) {
 				fieldKosongLabel.setText("Semua field harus diisi value dengan benar!");
+				fieldKosongLabel.setTextFill(Color.RED);
+			}else if (dataBarang.contains(namaBarangTF.getText().toString().toLowerCase())) {
+				fieldKosongLabel.setText("Nama barang sudah tersedia");
 				fieldKosongLabel.setTextFill(Color.RED);
 			}else {
 				getLastProductID();

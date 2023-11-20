@@ -1,13 +1,25 @@
 .list-view .scroll-bar:vertical {
     -fx-scale-x: 0;
 }
-
-.list-view .list-cell:even {
-	-fx-background-color: white;
-	-fx-text-fill: black;
+.list-view-1 .list-cell {
+    -fx-font-family: "Poppins";
+    -fx-font-size: 18;
+    -fx-min-height: 40;
+    -fx-max-width: 470;
+    -fx-border-color: black;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-padding: 15 15 15 10;
+    -fx-border-insets: 0 0 10 0;
 }
 
-.list-view .list-cell:odd {
-	-fx-background-color: white;
-	-fx-text-fill: black;
+.list-view-1 .list-cell:empty {
+    -fx-padding: 2px ;
+    -fx-background-color: transparent ;
+    -fx-background-insets: 0 ;
+    -fx-border-color: transparent;
+}
+.list-view-1 .list-cell:filled:selected{
+    -fx-background-color: inherit;
+    -fx-text-fill: black;
 }

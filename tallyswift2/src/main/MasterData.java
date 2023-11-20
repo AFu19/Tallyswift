@@ -300,7 +300,6 @@ public class MasterData extends Application{
 		changePage(masterPage);
 		
 		masterPage.setScene(scene);
-		masterPage.show();
 	}
 	
 	private void changePage(Stage stage) {

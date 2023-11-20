@@ -292,8 +292,11 @@ public class UbahBarang extends Application{
 		listViewTabel.setOnMouseClicked(e -> {
 			SelectionModel<HBox> selectionModel = listViewTabel.getSelectionModel();
 			HBox selectedBox = selectionModel.getSelectedItem();
-			String tempId = selectedBox.getChildren().get(0).toString();
-			kodeUbah = tempId.substring(tempId.length() - 6, tempId.length() - 1);
+			
+			if (selectedBox != null) {
+				String tempId = selectedBox.getChildren().get(0).toString();
+				kodeUbah = tempId.substring(tempId.length() - 6, tempId.length() - 1);				
+			}
 		});
 		
 		editButtonBox.setAlignment(Pos.CENTER_RIGHT);

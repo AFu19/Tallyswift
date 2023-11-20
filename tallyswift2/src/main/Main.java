@@ -127,7 +127,7 @@ public class Main extends Application{
 		rightContainer_gridpane.setMargin(continue_btn, new Insets(30, 0, 0, 0));
 		continue_btn.setPrefWidth(311);
 		continue_btn.setPrefHeight(52);
-		continue_btn.setStyle("-fx-background-color: #D6F7E7; -fx-border-radius: 15px; -fx-border-color: black;");
+		continue_btn.setStyle("-fx-background-color: #D6F7E7; -fx-background-radius: 15px; -fx-border-radius: 15px; -fx-border-color: black;");
 		continue_btn.setFont(font_bold28);
 		continue_btn.setOnMouseEntered(e -> scene_borderpane.setCursor(javafx.scene.Cursor.HAND));
 		continue_btn.setOnMouseExited(e -> scene_borderpane.setCursor(javafx.scene.Cursor.DEFAULT));

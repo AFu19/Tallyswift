@@ -158,7 +158,7 @@ public class SignIn extends Application{
 	private void styleFooter() {
 		signInButton.setPrefWidth(311);
 		signInButton.setPrefHeight(52);
-		signInButton.setStyle("-fx-background-color: #D6F7E7; -fx-border-radius: 15px; -fx-border-color: black;");		
+		signInButton.setStyle("-fx-background-color: #D6F7E7; -fx-background-radius: 15px; -fx-border-radius: 15px; -fx-border-color: black;");		
 		signInButton.setFont(fontBold18);
 		signInButton.setOnMouseEntered(e-> scene.setCursor(Cursor.HAND));
 		signInButton.setOnMouseExited(e -> scene.setCursor(Cursor.DEFAULT));

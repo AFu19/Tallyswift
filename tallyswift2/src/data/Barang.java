@@ -45,4 +45,9 @@ public class Barang {
 	public void setStok(Integer stok) {
 		this.stok = stok;
 	}
+	
+	@Override
+	public String toString() {
+		return namaBarang;
+	}
 }
