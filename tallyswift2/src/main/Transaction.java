@@ -419,6 +419,10 @@ public class Transaction extends Application{
 						break;
 					}
 				}
+				
+				if (dataCartBarang.isEmpty()) {
+					checkoutButton.setDisable(true);
+				}
             }
 		});
 		
